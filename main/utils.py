@@ -3,6 +3,39 @@ import io
 from datetime import datetime
 import json
 import os
+import pywinctl as pwc
+
+def startup():
+    # Ensure required folders exist
+    required_dirs = ['../images', '../responses', '../chat_completions', '../prompt']
+    for d in required_dirs:
+        if not os.path.exists(d):
+            os.makedirs(d)
+
+    windows_mode = 1
+    if windows_mode:
+        windows = print_all_windows_title()
+        n = int(input('choose window to monitor...'))
+        appname = windows[n]
+        if n == 0:
+            appname = None
+    else:
+        appname = None #fullscreen mode
+    print(f'monitoring {appname}...')
+    return appname
+
+def print_all_windows_title():
+    # windows = gw.getAllTitles()
+    windows = pwc.getAllTitles()
+    windows = ['Fullscreen'] + windows
+
+    for window in enumerate(windows):
+        window = list(window)
+        print(f'[{window[0]}] {window[1]}')
+
+    return windows
+
+
 
 def load_config(config_file="../config.json"):
     with open(config_file, "r") as f:
@@ -18,7 +51,9 @@ def get_save_filename():
     filename = f'../images/screenshot_{current_datetime}.png'
     return filename
 
-def save_image(image,filename):
+def save_image(image,filename = None):
+    if not filename:
+        filename = get_save_filename()
     image.save(filename)
     print(f'screenshot saved to {filename}...')
     return filename

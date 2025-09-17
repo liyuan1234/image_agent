@@ -1,6 +1,6 @@
 {
 "APPNAME":"",
 "MODEL_NAME":"gpt-5-nano",
-"MAX_OUTPUT_TOKENS": 3000,
+"MAX_OUTPUT_TOKENS": 5000,
 "PROMPT_FILE":"prompt.txt"
 }

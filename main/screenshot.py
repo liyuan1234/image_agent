@@ -9,18 +9,9 @@ import pygetwindow as gw
 import pyautogui
 import pywinctl as pwc
 
-def print_all_windows_title():
-    # windows = gw.getAllTitles()
-    windows = pwc.getAllTitles()
-    windows = ['Fullscreen'] + windows
+from utils import get_save_filename, save_image
 
-    for window in enumerate(windows):
-        window = list(window)
-        print(f'[{window[0]}] {window[1]}')
-
-    return windows
-
-def bbox_to_ltwh(X: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+def bbox_to_ltwh(X: list[int, int, int, int]) -> list[int, int, int, int]:
     return [X[0],X[1],X[2] - X[0], X[3] - X[1]] # return left top width height
 
 
@@ -67,20 +58,19 @@ def compare_images(img1, img2):
     return similarity
 
 def detect_screen_change(appname = None):
-    prev_screenshot = None
+    prev_screenshot = screenshot(appname)
+    filename = get_save_filename().replace('.png','prev.png')
+    save_image(prev_screenshot,filename)
     current_screenshot = None
     SIMILARITY_THRESHOLD = 0.98
     n = 0     
     while True:
-        # print(f'appname: {appname}, bbox: {bbox}')
-
-        prev_screenshot = current_screenshot 
         current_screenshot = screenshot(appname)
 
         if prev_screenshot is not None:
             similarity = compare_images(prev_screenshot, current_screenshot)
             if not similarity:
-                print('similarity is None')
+                print('similarity is None。 Shapes of img1 and img2 different. Skipping.')
                 time.sleep(0.5)
                 continue
             if similarity > SIMILARITY_THRESHOLD:
@@ -90,6 +80,7 @@ def detect_screen_change(appname = None):
                 print(f'\rscreenshots similarity {similarity:.5f}, image changed. proceed. ', end='')
 
                 break
+    save_image(current_screenshot)
     return current_screenshot
 
 def encode_image_to_base64(image: Image.Image) -> str:
@@ -98,9 +89,9 @@ def encode_image_to_base64(image: Image.Image) -> str:
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 def get_bbox(appname):
-    win = pwc.getWindowsWithTitle(appname)
-    if win:
-        return win[0].bbox
+    window = pwc.getWindowsWithTitle(appname)
+    if window:
+        return window[0].bbox
     
     else:
         return None
