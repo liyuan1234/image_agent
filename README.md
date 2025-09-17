@@ -1,4 +1,4 @@
- # GPA: A lightweight, general purpose LLM assistant.
+ # GPA: General Purpose LLM Assistant.
 
 Chatgpt is very good at understanding images and this feature can be exploited to perform guidance in complex situations. 
 
@@ -10,12 +10,13 @@ It is nevertheless a general purpose method and can be used for other scenarios 
 ![response](./examples/response.png)
 
 
-
+Set up:
 ```bash
 conda create -n assistant python=3.12
 pip install -r requirements.txt
 ```
 
+Run:
 ```bash
 cd main
 python chatgpt_assistant.py
