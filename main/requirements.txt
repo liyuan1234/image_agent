@@ -2,3 +2,5 @@ openai
 mss
 Pillow
 scikit-image
+pygetwindow
+pyautogui
