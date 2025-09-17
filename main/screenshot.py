@@ -6,9 +6,12 @@ import time
 import base64
 import io
 import pygetwindow as gw
+import pyautogui
+import pywinctl as pwc
 
 def print_all_windows_title():
-    windows = gw.getAllTitles()
+    # windows = gw.getAllTitles()
+    windows = pwc.getAllTitles()
     windows = ['Fullscreen'] + windows
 
     for window in enumerate(windows):
@@ -17,17 +20,35 @@ def print_all_windows_title():
 
     return windows
 
-def screenshot(bbox = None):
-    backend = 'PIL'  # 'PIL' or 'mss'
-    
+def bbox_to_ltwh(X: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+    return [X[0],X[1],X[2] - X[0], X[3] - X[1]] # return left top width height
+
+
+def screenshot(appname = None):
+    backend = 'mss'  # 'PIL' or 'mss' or 'pyautogui'
+    bbox = get_bbox(appname)
+
 
     if backend == 'PIL':
         img = ImageGrab.grab(bbox) # if bbox is None take full screen
     elif backend == 'mss':
-        from mss import mss
-        sct = mss()
-        img = sct.grab(sct.monitors[0])
+        with mss() as sct:
+
+            if bbox:
+                X = bbox_to_ltwh(bbox)
+                monitor = {
+                    "left": bbox[0],
+                    "top": bbox[1],
+                    "width": bbox[2] - bbox[0],
+                    "height": bbox[3] - bbox[1]
+                }
+            else:
+                monitor = sct.monitors[1]
+            img = sct.grab(monitor)
         img = Image.frombytes('RGB', img.size, img.rgb)
+    elif backend == 'pyautogui':
+        X = bbox_to_ltwh(bbox)
+        img = pyautogui.screenshot(region=X)
     return img
 
 def compare_images(img1, img2):
@@ -39,26 +60,35 @@ def compare_images(img1, img2):
     arr1 = np.array(img1_gray)
     arr2 = np.array(img2_gray)
     
+    if arr1.shape != arr2.shape:
+        return None
     # Compute Structural Similarity Index (SSI)
     similarity, _ = ssim(arr1, arr2, full=True)
     return similarity
 
 def detect_screen_change(appname = None):
-    bbox = get_bbox(appname)
-    print(f'appname: {appname}, bbox: {bbox}')
     prev_screenshot = None
     current_screenshot = None
-    SIMILARITY_THRESHOLD = 0.99     
+    SIMILARITY_THRESHOLD = 0.98
+    n = 0     
     while True:
+        # print(f'appname: {appname}, bbox: {bbox}')
+
         prev_screenshot = current_screenshot 
-        current_screenshot = screenshot(bbox)
+        current_screenshot = screenshot(appname)
 
         if prev_screenshot is not None:
             similarity = compare_images(prev_screenshot, current_screenshot)
+            if not similarity:
+                print('similarity is None')
+                time.sleep(0.5)
+                continue
             if similarity > SIMILARITY_THRESHOLD:
-                print(f'\rscreenshots similarity {similarity:.5f}, wait for image change...', end='')
+                print(f'\rscreenshots similarity {similarity:.5f}, wait for image change' + n//3*'.', end='')
                 time.sleep(0.01)
             else:
+                print(f'\rscreenshots similarity {similarity:.5f}, image changed. proceed. ', end='')
+
                 break
     return current_screenshot
 
@@ -68,10 +98,9 @@ def encode_image_to_base64(image: Image.Image) -> str:
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 def get_bbox(appname):
-    if appname:
-        bbox = gw.getWindowGeometry(appname)
+    win = pwc.getWindowsWithTitle(appname)
+    if win:
+        return win[0].bbox
+    
     else:
-        import pyautogui
-        width,height = pyautogui.size()
-        bbox = [0,0,width,height]
-    return bbox
+        return None

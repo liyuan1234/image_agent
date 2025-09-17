@@ -19,19 +19,19 @@ for d in required_dirs:
     if not os.path.exists(d):
         os.makedirs(d)
 
-windows = print_all_windows_title()
-APPNAME = "ac"
-if APPNAME:
-    if (APPNAME in windows) and (APPNAME != ""):
-        appname = APPNAME
-    else:
-        n = int(input('choose window to monitor...'))
-        appname = windows[n]
-elif APPNAME is None:
-    appname = None
+windows_mode = 1
+
+if windows_mode:
+    windows = print_all_windows_title()
+    n = int(input('choose window to monitor...'))
+    appname = windows[n]
+    if n == 0:
+        appname = None
+else:
+    appname = None #fullscreen mode
+print(f'monitoring {appname}...')
 
 while True:
-    print(appname)
     image = detect_screen_change(appname)
     filepath = get_save_filename()
     save_image(image, filepath)
