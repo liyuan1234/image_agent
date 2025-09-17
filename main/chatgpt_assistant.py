@@ -23,10 +23,8 @@ while True:
     filepath = get_save_filename()
     save_image(image, filepath)
     b64 = encode_image_to_base64(image)
-    with open('../prompt/prompt.txt','r') as f:
-        prompt = f.read()
     start = time.time()
-    response = send_chatgpt_request(b64, prompt)
+    response = send_chatgpt_request(b64)
     write_response_to_file(response)
     print(response.output_text)
     print(f'time taken: {time.time()-start:.3f}s')

@@ -1,4 +1,5 @@
 {
 "MODEL_NAME":"gpt-5-mini",
-"MAX_OUTPUT_TOKENS": 2000
+"MAX_OUTPUT_TOKENS": 2000,
+"PROMPT_FILE":"prompt.txt"
 }
