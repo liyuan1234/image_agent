@@ -24,6 +24,24 @@ def startup():
     print(f'monitoring {appname}...')
     return appname
 
+
+def choose_prompt():
+    prompt_files = []
+    for file in os.listdir("../prompt"):
+        if file.startswith('prompt') and file.endswith(".txt"):
+            prompt_files.append(file)
+    
+    for i, file in enumerate(prompt_files):
+        print(f'[{i}] {file}')
+
+    n = int(input('choose prompt file...'))
+    prompt_file = prompt_files[n]
+    with open(f'../prompt/{prompt_file}','r') as f:
+        prompt = f.read()
+
+    print(f'using prompt file: {prompt_file}...')
+    return prompt
+
 def print_all_windows_title():
     # windows = gw.getAllTitles()
     windows = pwc.getAllTitles()
@@ -71,7 +89,7 @@ def write_response_to_file(response):
 
     with open('../responses/responses.log', 'w') as f:
         f.write(f"\n\n\n{'='*100}\n\n\n")
-        f.write(f'log start: [{current_datetime}]\n')
+        f.write(f'log start. \n')
         f.write(f'date: {date_str}\n')
         f.write(f'time: {time_str}\n')
         f.write(response.output_text + old_text)

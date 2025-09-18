@@ -4,14 +4,15 @@ config = load_config()
 MODEL_NAME = config["MODEL_NAME"]
 MAX_OUTPUT_TOKENS = config['MAX_OUTPUT_TOKENS']
 REASONING_EFFORT = 'medium'
-PROMPT_FILE = config["PROMPT_FILE"]
+# PROMPT_FILE = config["PROMPT_FILE"]
 
 
 client = OpenAI()
 
-def send_chatgpt_request(image_b64):
-    with open(f'../prompt/{PROMPT_FILE}','r') as f:
-        prompt = f.read()
+def send_chatgpt_request(image_b64,prompt = None):
+    if prompt is None:
+        with open(f'../prompt/prompt.txt','r') as f:
+            prompt = f.read()
 
     response = client.responses.create(model=MODEL_NAME, input = [
         {"role":"user",
