@@ -15,9 +15,11 @@ The prompt can be easily customized for different contexts/problems.
 
 #### Use cases
 - Live visual tasks that require guidance
+- Upstream module for creating text input in required format e.g. JSON for downstream tasks/controller.
 - Livestream/Live video transcription
 - Real time Stock analysis
-- Homework assistant
+- Game assistant
+- Homework helper
 
 ## Examples
 
