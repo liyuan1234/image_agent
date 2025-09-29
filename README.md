@@ -14,7 +14,7 @@ Chatgpt is very good at understanding images and this feature can be exploited t
 #### Use cases
 - Live visual tasks that require guidance
 - Upstream module for creating text input in required format e.g. JSON for downstream tasks/controller.
-- Livestream/Live video transcription
+- Livestream/Live video transcription (may not work for online video streaming websties)
 - Real time Stock analysis
 - Game assistant
 - Homework helper
