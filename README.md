@@ -3,8 +3,6 @@
 ## Introduction
 Chatgpt is very good at understanding images and this feature can be exploited to perform guidance in complex situations. 
 
-The prompt can be easily customized for different contexts/problems.
-
 ####  Features
 - Real time, scene by scene
 - respond to visual changes (e.g. new 1m candle)
