@@ -21,6 +21,9 @@ Chatgpt is very good at understanding images and this feature can be exploited t
 
 ## Examples
 
+### terminal prompt selection and window selection
+![terminal](./examples/prompt_selection.png)
+
 ### Trading - Candlestick chart analysis
 
 For example, in trading, traders often interpret candlestick charts visually. Traders use a method called technical analysis which is complicated (involves many complicated patterns and measures) and highly subjective, and can lead to losses if inaccurate. Many traders, and especially beginners also have very little knowledge of technical analysis. One way is to rely (at your own peril) on chatgpt to analyse the candlestick graphs and provide trading advice. In this case, the LLM assistant can be deployed in which it will analyse the stock chart when it detects a change and output its analysis in text form and provide guidance to the trader. 
