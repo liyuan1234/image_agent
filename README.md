@@ -1,4 +1,4 @@
- # GPLLMA: General Purpose LLM Assistant.
+ # GPIC: General Purpose Image Cruncher.
 
 ## Introduction
 Chatgpt is very good at understanding images and this feature can be exploited to perform guidance in complex situations. 
