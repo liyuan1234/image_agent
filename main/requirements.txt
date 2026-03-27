@@ -1,6 +1,3 @@
-openai
-mss
-Pillow
-scikit-image
-pygetwindow
-pyautogui
+# Legacy file kept for convenience.
+# Prefer: pip install -e .
+-e .

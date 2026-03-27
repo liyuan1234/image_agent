@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image-agent"
+version = "0.1.0"
+description = "Monitor a window or screen, detect visual changes, and send screenshots to the OpenAI Responses API."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "liyuan" }]
+dependencies = [
+  "mss>=10.1.0",
+  "openai>=1.100.0",
+  "Pillow>=10.4.0",
+  "pyautogui>=0.9.54",
+  "pywinctl>=0.4.1",
+  "scikit-image>=0.24.0",
+]
+
+[project.scripts]
+image-agent = "image_agent.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+image_agent = ["resources/prompt/*.txt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

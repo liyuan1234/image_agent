@@ -1,0 +1,1 @@
+Analyze the Dota 2 game screenshot and provide concise gameplay guidance based only on the visible state.

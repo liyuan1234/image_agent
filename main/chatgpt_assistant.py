@@ -1,25 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 16 09:56:10 2025
+"""Legacy wrapper for the packaged CLI."""
 
-@author: liyuan
-"""
+from image_agent.cli import main
 
-import time
-import os
-from utils import startup, choose_prompt, load_config, get_current_datetime, write_response_to_file
-from screenshot import  detect_screen_change, encode_image_to_base64
-from llm import send_chatgpt_request
 
-prompt = choose_prompt()
-appname = startup()
-
-while True:
-    image = detect_screen_change(appname)
-    b64 = encode_image_to_base64(image)
-    start = time.time()
-    response = send_chatgpt_request(b64,prompt)
-    write_response_to_file(response)
-    print(response.output_text)
-    print(f'time taken: {time.time()-start:.3f}s')
+if __name__ == "__main__":
+    raise SystemExit(main())
