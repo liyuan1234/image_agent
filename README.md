@@ -59,13 +59,27 @@ Optional settings live in `config.json`:
 ```json
 {
   "APPNAME": "",
-  "MODEL_NAME": "gpt-5-mini",
+  "MODEL": "gpt-5-mini",
   "MAX_OUTPUT_TOKENS": 16000,
   "PROMPT_FILE": "prompt_dota2.txt",
   "SIMILARITY_THRESHOLD": 0.98,
   "POLL_INTERVAL_SECONDS": 0.01
 }
 ```
+
+To switch models, edit only this line:
+
+```json
+"MODEL": "gpt-5-mini"
+```
+
+For example:
+
+```json
+"MODEL": "gpt-5"
+```
+
+The app still accepts the older `MODEL_NAME` key for backward compatibility, but `MODEL` is now the preferred setting.
 
 ### Paths
 

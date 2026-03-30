@@ -27,7 +27,12 @@ def save_image(image, paths: AppPaths, filename: Path | None = None) -> Path:
     return target
 
 
+def format_response_text(text: str) -> str:
+    return text.replace("\\r\\n", "\n").replace("\\n", "\n").replace("\\t", "\t")
+
+
 def write_response_to_file(response, paths: AppPaths) -> tuple[Path, Path]:
+    formatted_output = format_response_text(response.output_text)
     now = datetime.now()
     current_datetime = now.strftime("%Y%m%d_%H%M%S")
     date_str = now.strftime("%Y-%m-%d")
@@ -42,7 +47,7 @@ def write_response_to_file(response, paths: AppPaths) -> tuple[Path, Path]:
             f"log start. \n"
             f"date: {date_str}\n"
             f"time: {time_str}\n"
-            f"{response.output_text}{old_text}"
+            f"{formatted_output}{old_text}"
             f"{DEFAULT_SEPARATOR}"
         ),
         encoding="utf-8",
@@ -85,7 +90,23 @@ def load_prompt_text(prompt_name: str, paths: AppPaths) -> str:
 
 def choose_from_list(items: Iterable[str], prompt_text: str) -> str:
     choices = list(items)
+    if not choices:
+        raise ValueError("No choices available.")
+
     for idx, item in enumerate(choices):
         print(f"[{idx}] {item}")
-    selection = int(input(prompt_text))
-    return choices[selection]
+
+    while True:
+        raw_selection = input(prompt_text).strip()
+        if not raw_selection:
+            print("Please enter a selection.")
+            continue
+        if not raw_selection.isdigit():
+            print("Please enter the number shown beside the option.")
+            continue
+
+        selection = int(raw_selection)
+        if 0 <= selection < len(choices):
+            return choices[selection]
+
+        print(f"Please choose a number between 0 and {len(choices) - 1}.")

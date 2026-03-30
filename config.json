@@ -1,6 +1,6 @@
 {
   "APPNAME": "",
-  "MODEL_NAME": "gpt-5-mini",
+  "MODEL": "gpt-5-mini",
   "MAX_OUTPUT_TOKENS": 16000,
   "PROMPT_FILE": "prompt_dota2.txt",
   "SIMILARITY_THRESHOLD": 0.98,

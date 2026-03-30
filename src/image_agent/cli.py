@@ -5,7 +5,7 @@ import sys
 import time
 
 from .config import AppPaths, load_config
-from .utils import choose_from_list, list_prompt_files, load_prompt_text, write_response_to_file
+from .utils import choose_from_list, format_response_text, list_prompt_files, load_prompt_text, write_response_to_file
 
 
 
@@ -69,38 +69,43 @@ def resolve_window(args, config: dict) -> str | None:
 
 
 def run(args: argparse.Namespace) -> int:
-    paths = AppPaths.discover(project_root=args.project_root, config_file=args.config)
-    paths.ensure_directories()
-    config = load_config(paths)
+    try:
+        paths = AppPaths.discover(project_root=args.project_root, config_file=args.config)
+        paths.ensure_directories()
+        config = load_config(paths)
 
-    if args.list_windows:
-        for index, title in enumerate(_list_window_titles()):
-            print(f"[{index}] {title}")
-        return 0
-
-    if args.list_prompts:
-        for name in list_prompt_files(paths):
-            print(name)
-        return 0
-
-    prompt_name, prompt_text = resolve_prompt(args, paths, config)
-    appname = resolve_window(args, config)
-    print(f"using prompt file: {prompt_name}...")
-    print(f"monitoring {appname or 'Fullscreen'}...")
-
-    from .llm import send_chatgpt_request
-    from .screenshot import detect_screen_change, encode_image_to_base64
-
-    while True:
-        image = detect_screen_change(paths, appname)
-        image_b64 = encode_image_to_base64(image)
-        start = time.time()
-        response = send_chatgpt_request(image_b64, paths, prompt_text)
-        write_response_to_file(response, paths)
-        print(response.output_text)
-        print(f"time taken: {time.time() - start:.3f}s")
-        if args.once:
+        if args.list_windows:
+            for index, title in enumerate(_list_window_titles()):
+                print(f"[{index}] {title}")
             return 0
+
+        if args.list_prompts:
+            for name in list_prompt_files(paths):
+                print(name)
+            return 0
+
+        prompt_name, prompt_text = resolve_prompt(args, paths, config)
+        appname = resolve_window(args, config)
+        print(f"using prompt file: {prompt_name}...")
+        print(f"monitoring {appname or 'Fullscreen'}...")
+
+        from .llm import send_chatgpt_request
+        from .screenshot import detect_screen_change, encode_image_to_base64
+
+        while True:
+            image = detect_screen_change(paths, appname)
+            image_b64 = encode_image_to_base64(image)
+            start = time.time()
+            response = send_chatgpt_request(image_b64, paths, prompt_text)
+            formatted_output = format_response_text(response.output_text)
+            write_response_to_file(response, paths)
+            print(formatted_output)
+            print(f"time taken: {time.time() - start:.3f}s")
+            if args.once:
+                return 0
+    except (FileNotFoundError, RuntimeError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
 
 
 

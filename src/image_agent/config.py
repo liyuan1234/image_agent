@@ -8,7 +8,7 @@ from typing import Any
 
 DEFAULT_CONFIG = {
     "APPNAME": "",
-    "MODEL_NAME": "gpt-5-mini",
+    "MODEL": "gpt-5-mini",
     "MAX_OUTPUT_TOKENS": 16000,
     "PROMPT_FILE": "prompt_dota2.txt",
     "SIMILARITY_THRESHOLD": 0.98,
@@ -68,8 +68,13 @@ def _discover_project_root(project_root: str | Path | None, config_file: str | P
 
 def load_config(paths: AppPaths) -> dict[str, Any]:
     config = DEFAULT_CONFIG.copy()
+    loaded: dict[str, Any] = {}
     if paths.config_file.exists():
         with paths.config_file.open("r", encoding="utf-8") as handle:
             loaded = json.load(handle)
         config.update(loaded)
+    if "MODEL" not in loaded and "MODEL_NAME" in loaded:
+        config["MODEL"] = config["MODEL_NAME"]
+    elif "MODEL" in loaded and config.get("MODEL_NAME") != config["MODEL"]:
+        config["MODEL_NAME"] = config["MODEL"]
     return config

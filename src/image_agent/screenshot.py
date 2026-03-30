@@ -28,7 +28,7 @@ def get_bbox(appname: str | None):
     windows = pwc.getWindowsWithTitle(appname)
     if windows:
         return windows[0].bbox
-    return None
+    raise ValueError(f'Window not found: "{appname}". Use --list-windows to inspect detectable titles.')
 
 
 
@@ -108,4 +108,5 @@ def encode_image_to_base64(image: Image.Image) -> str:
 
 
 def list_window_titles() -> list[str]:
-    return ["Fullscreen", *pwc.getAllTitles()]
+    titles = [title for title in pwc.getAllTitles() if title.strip()]
+    return ["Fullscreen", *sorted(set(titles))]
